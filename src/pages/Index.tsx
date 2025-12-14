@@ -87,7 +87,8 @@ const courses: Course[] = [
 ];
 
 const Index = () => {
-  const [view, setView] = useState<'home' | 'dashboard'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'payment'>('home');
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([
     {
       ...courses[0],
@@ -104,14 +105,22 @@ const Index = () => {
   ]);
 
   const handleEnroll = (course: Course) => {
-    const newEnrolled: EnrolledCourse = {
-      ...course,
-      progress: 0,
-      completedLessons: 0,
-      totalLessons: 20
-    };
-    setEnrolledCourses([...enrolledCourses, newEnrolled]);
-    setView('dashboard');
+    setSelectedCourse(course);
+    setView('payment');
+  };
+
+  const handlePaymentSuccess = () => {
+    if (selectedCourse) {
+      const newEnrolled: EnrolledCourse = {
+        ...selectedCourse,
+        progress: 0,
+        completedLessons: 0,
+        totalLessons: 20
+      };
+      setEnrolledCourses([...enrolledCourses, newEnrolled]);
+      setSelectedCourse(null);
+      setView('dashboard');
+    }
   };
 
   const isEnrolled = (courseId: number) => {
@@ -394,6 +403,83 @@ const Index = () => {
                 ))}
               </TabsContent>
             </Tabs>
+          </div>
+        ) : view === 'payment' && selectedCourse ? (
+          <div className="animate-fade-in max-w-2xl mx-auto">
+            <Button 
+              variant="ghost" 
+              onClick={() => setView('home')}
+              className="mb-6 gap-2"
+            >
+              <Icon name="ArrowLeft" size={18} />
+              Назад к курсам
+            </Button>
+
+            <Card className="bg-white/70 backdrop-blur-sm border-purple-100">
+              <CardHeader>
+                <CardTitle className="text-3xl mb-2">Оформление оплаты</CardTitle>
+                <CardDescription>Завершите оплату, чтобы начать обучение</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-gradient-to-br from-purple-50 to-green-50 p-6 rounded-xl">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Icon name={selectedCourse.icon as any} className="text-white" size={32} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-2">{selectedCourse.title}</h3>
+                      <p className="text-gray-600 mb-3">{selectedCourse.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                          {selectedCourse.category}
+                        </Badge>
+                        <Badge variant="outline">{selectedCourse.level}</Badge>
+                        <Badge variant="outline" className="gap-1">
+                          <Icon name="Clock" size={14} />
+                          {selectedCourse.duration}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-purple-100 pt-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-lg text-gray-700">Стоимость курса:</span>
+                    <span className="text-3xl font-bold text-green-600">
+                      {selectedCourse.price.toLocaleString()} ₽
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <Icon name="CheckCircle2" size={20} className="text-green-600" />
+                      <span>Доступ к материалам курса на все время</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <Icon name="CheckCircle2" size={20} className="text-green-600" />
+                      <span>Сертификат по завершению обучения</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <Icon name="CheckCircle2" size={20} className="text-green-600" />
+                      <span>Поддержка преподавателей 24/7</span>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 py-6 text-lg"
+                    onClick={handlePaymentSuccess}
+                  >
+                    <Icon name="CreditCard" size={20} className="mr-2" />
+                    Оплатить {selectedCourse.price.toLocaleString()} ₽
+                  </Button>
+
+                  <p className="text-sm text-gray-500 text-center mt-4">
+                    Нажимая на кнопку, вы соглашаетесь с условиями оферты
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         ) : (
           <div className="animate-fade-in">
