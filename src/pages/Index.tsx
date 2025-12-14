@@ -89,6 +89,7 @@ const courses: Course[] = [
 const Index = () => {
   const [view, setView] = useState<'home' | 'dashboard' | 'payment'>('home');
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([
     {
       ...courses[0],
@@ -132,34 +133,42 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-green-50">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-purple-100">
+    <div className={`min-h-screen transition-colors duration-300 ${accessibilityMode ? 'bg-black' : 'bg-gradient-to-br from-purple-50 via-white to-green-50'}`}>
+      <header className={`sticky top-0 z-50 border-b transition-colors duration-300 ${accessibilityMode ? 'bg-black border-yellow-400' : 'bg-white/80 backdrop-blur-lg border-purple-100'}`}>
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-green-500 rounded-xl flex items-center justify-center">
-                <Icon name="GraduationCap" className="text-white" size={24} />
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${accessibilityMode ? 'bg-yellow-400' : 'bg-gradient-to-br from-purple-600 to-green-500'}`}>
+                <Icon name="GraduationCap" className={accessibilityMode ? 'text-black' : 'text-white'} size={24} />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-green-600 bg-clip-text text-transparent">
+              <h1 className={`text-2xl font-bold ${accessibilityMode ? 'text-yellow-400' : 'bg-gradient-to-r from-purple-600 to-green-600 bg-clip-text text-transparent'}`}>
                 EduPlatform
               </h1>
             </div>
-            <nav className="flex gap-2">
+            <nav className="flex gap-2 flex-wrap">
               <Button 
                 variant={view === 'home' ? 'default' : 'ghost'}
                 onClick={() => setView('home')}
-                className="gap-2"
+                className={`gap-2 ${accessibilityMode ? 'text-yellow-400 hover:bg-yellow-400 hover:text-black text-lg px-6 py-6' : ''}`}
               >
-                <Icon name="Home" size={18} />
+                <Icon name="Home" size={accessibilityMode ? 24 : 18} />
                 Курсы
               </Button>
               <Button 
                 variant={view === 'dashboard' ? 'default' : 'ghost'}
                 onClick={() => setView('dashboard')}
-                className="gap-2"
+                className={`gap-2 ${accessibilityMode ? 'text-yellow-400 hover:bg-yellow-400 hover:text-black text-lg px-6 py-6' : ''}`}
               >
-                <Icon name="User" size={18} />
+                <Icon name="User" size={accessibilityMode ? 24 : 18} />
                 Мои курсы
+              </Button>
+              <Button 
+                variant={accessibilityMode ? 'default' : 'outline'}
+                onClick={() => setAccessibilityMode(!accessibilityMode)}
+                className={`gap-2 ${accessibilityMode ? 'bg-yellow-400 text-black hover:bg-yellow-500 text-lg px-6 py-6 font-bold' : ''}`}
+              >
+                <Icon name="Eye" size={accessibilityMode ? 24 : 18} />
+                {accessibilityMode ? 'Обычная версия' : 'Для слабовидящих'}
               </Button>
             </nav>
           </div>
@@ -170,68 +179,68 @@ const Index = () => {
         {view === 'home' ? (
           <div className="animate-fade-in">
             <section className="text-center mb-16 py-12">
-              <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-purple-500 to-green-600 bg-clip-text text-transparent">
+              <h2 className={`font-bold mb-4 ${accessibilityMode ? 'text-6xl text-yellow-400' : 'text-5xl bg-gradient-to-r from-purple-600 via-purple-500 to-green-600 bg-clip-text text-transparent'}`}>
                 Обучение нового поколения
               </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className={`max-w-2xl mx-auto ${accessibilityMode ? 'text-3xl text-white leading-relaxed' : 'text-xl text-gray-600'}`}>
                 Программирование, цифровая грамотность и школьные предметы. 
                 Индивидуальный подход к каждому ученику.
               </p>
             </section>
 
             <Tabs defaultValue="all" className="w-full">
-              <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-8">
-                <TabsTrigger value="all">Все курсы</TabsTrigger>
-                <TabsTrigger value="programming">Программирование</TabsTrigger>
-                <TabsTrigger value="digital">Цифровая грамотность</TabsTrigger>
-                <TabsTrigger value="school">Школьные предметы</TabsTrigger>
+              <TabsList className={`grid w-full max-w-2xl mx-auto grid-cols-4 mb-8 ${accessibilityMode ? 'bg-black border-2 border-yellow-400' : ''}`}>
+                <TabsTrigger value="all" className={accessibilityMode ? 'text-yellow-400 data-[state=active]:bg-yellow-400 data-[state=active]:text-black text-xl py-4' : ''}>Все курсы</TabsTrigger>
+                <TabsTrigger value="programming" className={accessibilityMode ? 'text-yellow-400 data-[state=active]:bg-yellow-400 data-[state=active]:text-black text-xl py-4' : ''}>Программирование</TabsTrigger>
+                <TabsTrigger value="digital" className={accessibilityMode ? 'text-yellow-400 data-[state=active]:bg-yellow-400 data-[state=active]:text-black text-xl py-4' : ''}>Цифровая грамотность</TabsTrigger>
+                <TabsTrigger value="school" className={accessibilityMode ? 'text-yellow-400 data-[state=active]:bg-yellow-400 data-[state=active]:text-black text-xl py-4' : ''}>Школьные предметы</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="all" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <TabsContent value="all" className={`grid gap-6 ${accessibilityMode ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
                 {courses.map((course, index) => (
                   <Card 
                     key={course.id} 
-                    className="transition-all duration-300 hover:-translate-y-1 hover:shadow-xl bg-white/70 backdrop-blur-sm border-purple-100 animate-fade-in"
+                    className={`transition-all duration-300 animate-fade-in ${accessibilityMode ? 'bg-black border-4 border-yellow-400 hover:border-yellow-300' : 'hover:-translate-y-1 hover:shadow-xl bg-white/70 backdrop-blur-sm border-purple-100'}`}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <CardHeader>
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-green-500 rounded-lg flex items-center justify-center mb-4">
-                        <Icon name={course.icon as any} className="text-white" size={24} />
+                      <div className={`rounded-lg flex items-center justify-center mb-4 ${accessibilityMode ? 'w-20 h-20 bg-yellow-400' : 'w-12 h-12 bg-gradient-to-br from-purple-500 to-green-500'}`}>
+                        <Icon name={course.icon as any} className={accessibilityMode ? 'text-black' : 'text-white'} size={accessibilityMode ? 40 : 24} />
                       </div>
-                      <CardTitle className="text-xl">{course.title}</CardTitle>
-                      <CardDescription className="text-sm">{course.description}</CardDescription>
+                      <CardTitle className={accessibilityMode ? 'text-3xl text-yellow-400 mb-3' : 'text-xl'}>{course.title}</CardTitle>
+                      <CardDescription className={accessibilityMode ? 'text-2xl text-white leading-relaxed' : 'text-sm'}>{course.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-wrap gap-2 mb-4">
-                        <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                        <Badge variant="secondary" className={accessibilityMode ? 'bg-yellow-400 text-black text-xl px-4 py-2' : 'bg-purple-100 text-purple-700'}>
                           {course.category}
                         </Badge>
-                        <Badge variant="outline">{course.level}</Badge>
+                        <Badge variant="outline" className={accessibilityMode ? 'border-yellow-400 text-yellow-400 text-xl px-4 py-2' : ''}>{course.level}</Badge>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className={`flex items-center gap-4 ${accessibilityMode ? 'text-2xl text-white' : 'text-sm text-gray-600'}`}>
                         <div className="flex items-center gap-1">
-                          <Icon name="Clock" size={16} />
+                          <Icon name="Clock" size={accessibilityMode ? 24 : 16} />
                           <span>{course.duration}</span>
                         </div>
-                        <div className="font-bold text-green-600">
+                        <div className={`font-bold ${accessibilityMode ? 'text-yellow-400' : 'text-green-600'}`}>
                           {course.price.toLocaleString()} ₽
                         </div>
                       </div>
                     </CardContent>
                     <CardFooter>
                       <Button 
-                        className="w-full bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                        className={`w-full ${accessibilityMode ? 'bg-yellow-400 text-black hover:bg-yellow-500 text-2xl py-8 font-bold' : 'bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700'}`}
                         onClick={() => handleEnroll(course)}
                         disabled={isEnrolled(course.id)}
                       >
                         {isEnrolled(course.id) ? (
                           <>
-                            <Icon name="CheckCircle2" size={18} className="mr-2" />
+                            <Icon name="CheckCircle2" size={accessibilityMode ? 28 : 18} className="mr-2" />
                             Вы записаны
                           </>
                         ) : (
                           <>
-                            <Icon name="ShoppingCart" size={18} className="mr-2" />
+                            <Icon name="ShoppingCart" size={accessibilityMode ? 28 : 18} className="mr-2" />
                             Записаться
                           </>
                         )}
@@ -409,33 +418,33 @@ const Index = () => {
             <Button 
               variant="ghost" 
               onClick={() => setView('home')}
-              className="mb-6 gap-2"
+              className={`mb-6 gap-2 ${accessibilityMode ? 'text-yellow-400 hover:bg-yellow-400 hover:text-black text-xl py-6 px-6' : ''}`}
             >
-              <Icon name="ArrowLeft" size={18} />
+              <Icon name="ArrowLeft" size={accessibilityMode ? 24 : 18} />
               Назад к курсам
             </Button>
 
-            <Card className="bg-white/70 backdrop-blur-sm border-purple-100">
+            <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
               <CardHeader>
-                <CardTitle className="text-3xl mb-2">Оформление оплаты</CardTitle>
-                <CardDescription>Завершите оплату, чтобы начать обучение</CardDescription>
+                <CardTitle className={accessibilityMode ? 'text-5xl text-yellow-400 mb-4' : 'text-3xl mb-2'}>Оформление оплаты</CardTitle>
+                <CardDescription className={accessibilityMode ? 'text-2xl text-white' : ''}>Завершите оплату, чтобы начать обучение</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-gradient-to-br from-purple-50 to-green-50 p-6 rounded-xl">
+                <div className={accessibilityMode ? 'bg-black border-2 border-yellow-400 p-8 rounded-xl' : 'bg-gradient-to-br from-purple-50 to-green-50 p-6 rounded-xl'}>
                   <div className="flex gap-4 items-start">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon name={selectedCourse.icon as any} className="text-white" size={32} />
+                    <div className={`rounded-lg flex items-center justify-center flex-shrink-0 ${accessibilityMode ? 'w-24 h-24 bg-yellow-400' : 'w-16 h-16 bg-gradient-to-br from-purple-500 to-green-500'}`}>
+                      <Icon name={selectedCourse.icon as any} className={accessibilityMode ? 'text-black' : 'text-white'} size={accessibilityMode ? 48 : 32} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-2">{selectedCourse.title}</h3>
-                      <p className="text-gray-600 mb-3">{selectedCourse.description}</p>
+                      <h3 className={`font-bold mb-2 ${accessibilityMode ? 'text-3xl text-yellow-400' : 'text-xl'}`}>{selectedCourse.title}</h3>
+                      <p className={`mb-3 ${accessibilityMode ? 'text-2xl text-white leading-relaxed' : 'text-gray-600'}`}>{selectedCourse.description}</p>
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                        <Badge variant="secondary" className={accessibilityMode ? 'bg-yellow-400 text-black text-xl px-4 py-2' : 'bg-purple-100 text-purple-700'}>
                           {selectedCourse.category}
                         </Badge>
-                        <Badge variant="outline">{selectedCourse.level}</Badge>
-                        <Badge variant="outline" className="gap-1">
-                          <Icon name="Clock" size={14} />
+                        <Badge variant="outline" className={accessibilityMode ? 'border-yellow-400 text-yellow-400 text-xl px-4 py-2' : ''}>{selectedCourse.level}</Badge>
+                        <Badge variant="outline" className={`gap-1 ${accessibilityMode ? 'border-yellow-400 text-yellow-400 text-xl px-4 py-2' : ''}`}>
+                          <Icon name="Clock" size={accessibilityMode ? 20 : 14} />
                           {selectedCourse.duration}
                         </Badge>
                       </div>
@@ -443,38 +452,38 @@ const Index = () => {
                   </div>
                 </div>
 
-                <div className="border-t border-purple-100 pt-6">
+                <div className={`pt-6 ${accessibilityMode ? 'border-t-2 border-yellow-400' : 'border-t border-purple-100'}`}>
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-lg text-gray-700">Стоимость курса:</span>
-                    <span className="text-3xl font-bold text-green-600">
+                    <span className={accessibilityMode ? 'text-3xl text-white' : 'text-lg text-gray-700'}>Стоимость курса:</span>
+                    <span className={`font-bold ${accessibilityMode ? 'text-5xl text-yellow-400' : 'text-3xl text-green-600'}`}>
                       {selectedCourse.price.toLocaleString()} ₽
                     </span>
                   </div>
 
                   <div className="space-y-3 mb-6">
-                    <div className="flex items-center gap-3 text-gray-600">
-                      <Icon name="CheckCircle2" size={20} className="text-green-600" />
+                    <div className={`flex items-center gap-3 ${accessibilityMode ? 'text-2xl text-white' : 'text-gray-600'}`}>
+                      <Icon name="CheckCircle2" size={accessibilityMode ? 28 : 20} className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} />
                       <span>Доступ к материалам курса на все время</span>
                     </div>
-                    <div className="flex items-center gap-3 text-gray-600">
-                      <Icon name="CheckCircle2" size={20} className="text-green-600" />
+                    <div className={`flex items-center gap-3 ${accessibilityMode ? 'text-2xl text-white' : 'text-gray-600'}`}>
+                      <Icon name="CheckCircle2" size={accessibilityMode ? 28 : 20} className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} />
                       <span>Сертификат по завершению обучения</span>
                     </div>
-                    <div className="flex items-center gap-3 text-gray-600">
-                      <Icon name="CheckCircle2" size={20} className="text-green-600" />
+                    <div className={`flex items-center gap-3 ${accessibilityMode ? 'text-2xl text-white' : 'text-gray-600'}`}>
+                      <Icon name="CheckCircle2" size={accessibilityMode ? 28 : 20} className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} />
                       <span>Поддержка преподавателей 24/7</span>
                     </div>
                   </div>
 
                   <Button 
-                    className="w-full bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 py-6 text-lg"
+                    className={`w-full ${accessibilityMode ? 'bg-yellow-400 text-black hover:bg-yellow-500 py-10 text-3xl font-bold' : 'bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 py-6 text-lg'}`}
                     onClick={handlePaymentSuccess}
                   >
-                    <Icon name="CreditCard" size={20} className="mr-2" />
+                    <Icon name="CreditCard" size={accessibilityMode ? 32 : 20} className="mr-2" />
                     Оплатить {selectedCourse.price.toLocaleString()} ₽
                   </Button>
 
-                  <p className="text-sm text-gray-500 text-center mt-4">
+                  <p className={`text-center mt-4 ${accessibilityMode ? 'text-xl text-white' : 'text-sm text-gray-500'}`}>
                     Нажимая на кнопку, вы соглашаетесь с условиями оферты
                   </p>
                 </div>
@@ -484,34 +493,34 @@ const Index = () => {
         ) : (
           <div className="animate-fade-in">
             <section className="mb-12">
-              <div className="bg-gradient-to-r from-purple-600 to-green-600 rounded-2xl p-8 text-white">
-                <h2 className="text-4xl font-bold mb-2">Личный кабинет</h2>
-                <p className="text-purple-100">Отслеживайте свой прогресс и продолжайте обучение</p>
+              <div className={`rounded-2xl p-8 ${accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-gradient-to-r from-purple-600 to-green-600 text-white'}`}>
+                <h2 className={`font-bold mb-2 ${accessibilityMode ? 'text-6xl text-yellow-400' : 'text-4xl text-white'}`}>Личный кабинет</h2>
+                <p className={accessibilityMode ? 'text-3xl text-white' : 'text-purple-100'}>Отслеживайте свой прогресс и продолжайте обучение</p>
               </div>
             </section>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <Card className="bg-white/70 backdrop-blur-sm border-purple-100">
+            <div className={`grid gap-6 mb-12 ${accessibilityMode ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-3'}`}>
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Icon name="BookOpen" className="text-purple-600" size={20} />
-                    Активных курсов
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="BookOpen" className={accessibilityMode ? 'text-yellow-400' : 'text-purple-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Активных курсов</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold text-purple-600">{enrolledCourses.length}</p>
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-purple-600'}`}>{enrolledCourses.length}</p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/70 backdrop-blur-sm border-purple-100">
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Icon name="Target" className="text-green-600" size={20} />
-                    Средний прогресс
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="Target" className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Средний прогресс</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold text-green-600">
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-green-600'}`}>
                     {enrolledCourses.length > 0 
                       ? Math.round(enrolledCourses.reduce((acc, c) => acc + c.progress, 0) / enrolledCourses.length)
                       : 0}%
@@ -519,15 +528,15 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/70 backdrop-blur-sm border-purple-100">
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Icon name="Award" className="text-purple-600" size={20} />
-                    Пройдено уроков
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="Award" className={accessibilityMode ? 'text-yellow-400' : 'text-purple-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Пройдено уроков</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold text-purple-600">
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-purple-600'}`}>
                     {enrolledCourses.reduce((acc, c) => acc + c.completedLessons, 0)}
                   </p>
                 </CardContent>
@@ -535,35 +544,35 @@ const Index = () => {
             </div>
 
             <section>
-              <h3 className="text-2xl font-bold mb-6 text-gray-800">Мои курсы</h3>
+              <h3 className={`font-bold mb-6 ${accessibilityMode ? 'text-5xl text-yellow-400' : 'text-2xl text-gray-800'}`}>Мои курсы</h3>
               {enrolledCourses.length === 0 ? (
-                <Card className="bg-white/70 backdrop-blur-sm border-purple-100 p-12 text-center">
-                  <Icon name="BookOpen" className="mx-auto text-gray-400 mb-4" size={48} />
-                  <p className="text-gray-600 text-lg mb-4">У вас пока нет активных курсов</p>
+                <Card className={`p-12 text-center ${accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}`}>
+                  <Icon name="BookOpen" className={`mx-auto mb-4 ${accessibilityMode ? 'text-yellow-400' : 'text-gray-400'}`} size={accessibilityMode ? 64 : 48} />
+                  <p className={`mb-4 ${accessibilityMode ? 'text-3xl text-white' : 'text-gray-600 text-lg'}`}>У вас пока нет активных курсов</p>
                   <Button 
                     onClick={() => setView('home')}
-                    className="bg-gradient-to-r from-purple-600 to-green-600"
+                    className={accessibilityMode ? 'bg-yellow-400 text-black hover:bg-yellow-500 text-2xl py-8 px-8 font-bold' : 'bg-gradient-to-r from-purple-600 to-green-600'}
                   >
                     Выбрать курс
                   </Button>
                 </Card>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className={`grid gap-6 ${accessibilityMode ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
                   {enrolledCourses.map((course, index) => (
                     <Card 
                       key={course.id} 
-                      className="transition-all duration-300 hover:-translate-y-1 hover:shadow-xl bg-white/70 backdrop-blur-sm border-purple-100 animate-fade-in"
+                      className={`transition-all duration-300 animate-fade-in ${accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'hover:-translate-y-1 hover:shadow-xl bg-white/70 backdrop-blur-sm border-purple-100'}`}
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <Icon name={course.icon as any} className="text-white" size={24} />
+                            <div className={`rounded-lg flex items-center justify-center flex-shrink-0 ${accessibilityMode ? 'w-20 h-20 bg-yellow-400' : 'w-12 h-12 bg-gradient-to-br from-purple-500 to-green-500'}`}>
+                              <Icon name={course.icon as any} className={accessibilityMode ? 'text-black' : 'text-white'} size={accessibilityMode ? 40 : 24} />
                             </div>
                             <div>
-                              <CardTitle className="text-xl mb-1">{course.title}</CardTitle>
-                              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                              <CardTitle className={accessibilityMode ? 'text-3xl text-yellow-400 mb-2' : 'text-xl mb-1'}>{course.title}</CardTitle>
+                              <Badge variant="secondary" className={accessibilityMode ? 'bg-yellow-400 text-black text-xl px-4 py-2' : 'bg-purple-100 text-purple-700'}>
                                 {course.category}
                               </Badge>
                             </div>
@@ -572,35 +581,35 @@ const Index = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleUnenroll(course.id)}
-                            className="text-gray-400 hover:text-red-600 hover:bg-red-50"
+                            className={accessibilityMode ? 'text-yellow-400 hover:bg-yellow-400 hover:text-black w-16 h-16' : 'text-gray-400 hover:text-red-600 hover:bg-red-50'}
                           >
-                            <Icon name="X" size={20} />
+                            <Icon name="X" size={accessibilityMode ? 32 : 20} />
                           </Button>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-700">Прогресс</span>
-                            <span className="text-2xl font-bold text-purple-600">{course.progress}%</span>
+                            <span className={`font-medium ${accessibilityMode ? 'text-2xl text-white' : 'text-sm text-gray-700'}`}>Прогресс</span>
+                            <span className={`font-bold ${accessibilityMode ? 'text-4xl text-yellow-400' : 'text-2xl text-purple-600'}`}>{course.progress}%</span>
                           </div>
-                          <Progress value={course.progress} className="h-3" />
+                          <Progress value={course.progress} className={accessibilityMode ? 'h-6' : 'h-3'} />
                         </div>
                         
-                        <div className="flex items-center justify-between text-sm text-gray-600">
+                        <div className={`flex items-center justify-between ${accessibilityMode ? 'text-2xl text-white' : 'text-sm text-gray-600'}`}>
                           <div className="flex items-center gap-2">
-                            <Icon name="CheckCircle2" size={16} className="text-green-600" />
+                            <Icon name="CheckCircle2" size={accessibilityMode ? 24 : 16} className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} />
                             <span>{course.completedLessons} из {course.totalLessons} уроков</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Icon name="Clock" size={16} />
+                            <Icon name="Clock" size={accessibilityMode ? 24 : 16} />
                             <span>{course.duration}</span>
                           </div>
                         </div>
                       </CardContent>
                       <CardFooter>
-                        <Button className="w-full bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700">
-                          <Icon name="PlayCircle" size={18} className="mr-2" />
+                        <Button className={`w-full ${accessibilityMode ? 'bg-yellow-400 text-black hover:bg-yellow-500 text-2xl py-8 font-bold' : 'bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700'}`}>
+                          <Icon name="PlayCircle" size={accessibilityMode ? 28 : 18} className="mr-2" />
                           Продолжить обучение
                         </Button>
                       </CardFooter>
