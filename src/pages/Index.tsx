@@ -118,6 +118,10 @@ const Index = () => {
     return enrolledCourses.some(c => c.id === courseId);
   };
 
+  const handleUnenroll = (courseId: number) => {
+    setEnrolledCourses(enrolledCourses.filter(c => c.id !== courseId));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-green-50">
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-purple-100">
@@ -478,6 +482,14 @@ const Index = () => {
                               </Badge>
                             </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleUnenroll(course.id)}
+                            className="text-gray-400 hover:text-red-600 hover:bg-red-50"
+                          >
+                            <Icon name="X" size={20} />
+                          </Button>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
