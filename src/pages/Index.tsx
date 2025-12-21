@@ -553,7 +553,7 @@ const Index = () => {
               </CardContent>
             </Card>
           </div>
-        ) : (
+        ) : view === 'dashboard' ? (
           <div className="animate-fade-in">
             <section className="mb-12">
               <div className={`rounded-2xl p-8 ${accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-gradient-to-r from-purple-600 to-green-600 text-white'}`}>
