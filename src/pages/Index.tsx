@@ -23,6 +23,15 @@ interface EnrolledCourse extends Course {
   totalLessons: number;
 }
 
+interface Student {
+  id: number;
+  name: string;
+  email: string;
+  enrolledCourses: EnrolledCourse[];
+  totalProgress: number;
+  joinDate: string;
+}
+
 const courses: Course[] = [
   {
     id: 1,
@@ -87,7 +96,7 @@ const courses: Course[] = [
 ];
 
 const Index = () => {
-  const [view, setView] = useState<'home' | 'dashboard' | 'payment'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'payment' | 'admin'>('home');
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([
@@ -102,6 +111,52 @@ const Index = () => {
       progress: 40,
       completedLessons: 6,
       totalLessons: 15
+    }
+  ]);
+
+  const [students, setStudents] = useState<Student[]>([
+    {
+      id: 1,
+      name: 'Анна Петрова',
+      email: 'anna@example.com',
+      enrolledCourses: [
+        { ...courses[0], progress: 85, completedLessons: 17, totalLessons: 20 },
+        { ...courses[3], progress: 60, completedLessons: 9, totalLessons: 15 }
+      ],
+      totalProgress: 73,
+      joinDate: '15.11.2024'
+    },
+    {
+      id: 2,
+      name: 'Михаил Сидоров',
+      email: 'mikhail@example.com',
+      enrolledCourses: [
+        { ...courses[1], progress: 45, completedLessons: 9, totalLessons: 20 }
+      ],
+      totalProgress: 45,
+      joinDate: '20.11.2024'
+    },
+    {
+      id: 3,
+      name: 'Елена Иванова',
+      email: 'elena@example.com',
+      enrolledCourses: [
+        { ...courses[2], progress: 90, completedLessons: 14, totalLessons: 15 },
+        { ...courses[4], progress: 75, completedLessons: 15, totalLessons: 20 },
+        { ...courses[0], progress: 50, completedLessons: 10, totalLessons: 20 }
+      ],
+      totalProgress: 72,
+      joinDate: '10.11.2024'
+    },
+    {
+      id: 4,
+      name: 'Дмитрий Козлов',
+      email: 'dmitry@example.com',
+      enrolledCourses: [
+        { ...courses[5], progress: 30, completedLessons: 6, totalLessons: 20 }
+      ],
+      totalProgress: 30,
+      joinDate: '01.12.2024'
     }
   ]);
 
@@ -161,6 +216,14 @@ const Index = () => {
               >
                 <Icon name="User" size={accessibilityMode ? 24 : 18} />
                 Мои курсы
+              </Button>
+              <Button 
+                variant={view === 'admin' ? 'default' : 'ghost'}
+                onClick={() => setView('admin')}
+                className={`gap-2 ${accessibilityMode ? 'text-yellow-400 hover:bg-yellow-400 hover:text-black text-lg px-6 py-6' : ''}`}
+              >
+                <Icon name="Shield" size={accessibilityMode ? 24 : 18} />
+                Админ
               </Button>
               <Button 
                 variant={accessibilityMode ? 'default' : 'outline'}
@@ -619,7 +682,150 @@ const Index = () => {
               )}
             </section>
           </div>
-        )}
+        ) : view === 'admin' ? (
+          <div className="animate-fade-in">
+            <section className="mb-12">
+              <div className={`rounded-2xl p-8 ${accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-gradient-to-r from-purple-600 to-green-600 text-white'}`}>
+                <h2 className={`font-bold mb-2 ${accessibilityMode ? 'text-6xl text-yellow-400' : 'text-4xl text-white'}`}>Админ-панель</h2>
+                <p className={accessibilityMode ? 'text-3xl text-white' : 'text-purple-100'}>Управление учениками и их курсами</p>
+              </div>
+            </section>
+
+            <div className={`grid gap-6 mb-12 ${accessibilityMode ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-4'}`}>
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="Users" className={accessibilityMode ? 'text-yellow-400' : 'text-purple-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Всего учеников</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-purple-600'}`}>{students.length}</p>
+                </CardContent>
+              </Card>
+
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="BookOpen" className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Активных курсов</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-green-600'}`}>
+                    {students.reduce((acc, s) => acc + s.enrolledCourses.length, 0)}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="TrendingUp" className={accessibilityMode ? 'text-yellow-400' : 'text-purple-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Средний прогресс</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-purple-600'}`}>
+                    {Math.round(students.reduce((acc, s) => acc + s.totalProgress, 0) / students.length)}%
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className={accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'bg-white/70 backdrop-blur-sm border-purple-100'}>
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 ${accessibilityMode ? 'text-3xl' : 'text-lg'}`}>
+                    <Icon name="Award" className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} size={accessibilityMode ? 32 : 20} />
+                    <span className={accessibilityMode ? 'text-yellow-400' : ''}>Всего уроков</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className={`font-bold ${accessibilityMode ? 'text-6xl text-white' : 'text-4xl text-green-600'}`}>
+                    {students.reduce((acc, s) => acc + s.enrolledCourses.reduce((a, c) => a + c.completedLessons, 0), 0)}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <section>
+              <h3 className={`font-bold mb-6 ${accessibilityMode ? 'text-5xl text-yellow-400' : 'text-2xl text-gray-800'}`}>Ученики</h3>
+              <div className="space-y-6">
+                {students.map((student, index) => (
+                  <Card 
+                    key={student.id}
+                    className={`transition-all duration-300 animate-fade-in ${accessibilityMode ? 'bg-black border-4 border-yellow-400' : 'hover:shadow-xl bg-white/70 backdrop-blur-sm border-purple-100'}`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <CardHeader>
+                      <div className="flex items-start justify-between flex-wrap gap-4">
+                        <div className="flex gap-4 items-center">
+                          <div className={`rounded-full flex items-center justify-center flex-shrink-0 ${accessibilityMode ? 'w-20 h-20 bg-yellow-400' : 'w-16 h-16 bg-gradient-to-br from-purple-500 to-green-500'}`}>
+                            <Icon name="User" className={accessibilityMode ? 'text-black' : 'text-white'} size={accessibilityMode ? 40 : 32} />
+                          </div>
+                          <div>
+                            <CardTitle className={accessibilityMode ? 'text-3xl text-yellow-400 mb-2' : 'text-2xl mb-2'}>{student.name}</CardTitle>
+                            <div className="flex flex-wrap gap-2 items-center">
+                              <Badge variant="outline" className={`gap-1 ${accessibilityMode ? 'border-yellow-400 text-yellow-400 text-xl px-4 py-2' : ''}`}>
+                                <Icon name="Mail" size={accessibilityMode ? 20 : 14} />
+                                {student.email}
+                              </Badge>
+                              <Badge variant="outline" className={`gap-1 ${accessibilityMode ? 'border-yellow-400 text-yellow-400 text-xl px-4 py-2' : ''}`}>
+                                <Icon name="Calendar" size={accessibilityMode ? 20 : 14} />
+                                {student.joinDate}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`font-bold mb-1 ${accessibilityMode ? 'text-5xl text-yellow-400' : 'text-3xl text-purple-600'}`}>
+                            {student.totalProgress}%
+                          </div>
+                          <p className={accessibilityMode ? 'text-xl text-white' : 'text-sm text-gray-600'}>Общий прогресс</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <h4 className={`font-semibold mb-4 ${accessibilityMode ? 'text-2xl text-yellow-400' : 'text-lg text-gray-800'}`}>
+                        Курсы студента ({student.enrolledCourses.length})
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {student.enrolledCourses.map((course) => (
+                          <div 
+                            key={course.id} 
+                            className={`p-4 rounded-lg ${accessibilityMode ? 'bg-gray-900 border-2 border-yellow-400' : 'bg-gradient-to-br from-purple-50 to-green-50'}`}
+                          >
+                            <div className="flex gap-3 mb-3">
+                              <div className={`rounded-lg flex items-center justify-center flex-shrink-0 ${accessibilityMode ? 'w-12 h-12 bg-yellow-400' : 'w-10 h-10 bg-gradient-to-br from-purple-500 to-green-500'}`}>
+                                <Icon name={course.icon as any} className={accessibilityMode ? 'text-black' : 'text-white'} size={accessibilityMode ? 24 : 20} />
+                              </div>
+                              <div className="flex-1">
+                                <h5 className={`font-semibold mb-1 ${accessibilityMode ? 'text-xl text-yellow-400' : 'text-sm'}`}>{course.title}</h5>
+                                <Badge variant="secondary" className={`text-xs ${accessibilityMode ? 'bg-yellow-400 text-black text-lg px-3 py-1' : 'bg-purple-100 text-purple-700'}`}>
+                                  {course.category}
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className={accessibilityMode ? 'text-xl text-white' : 'text-xs text-gray-600'}>Прогресс</span>
+                                <span className={`font-bold ${accessibilityMode ? 'text-2xl text-yellow-400' : 'text-sm text-purple-600'}`}>{course.progress}%</span>
+                              </div>
+                              <Progress value={course.progress} className={accessibilityMode ? 'h-4' : 'h-2'} />
+                              <div className={`flex items-center gap-1 ${accessibilityMode ? 'text-xl text-white' : 'text-xs text-gray-500'}`}>
+                                <Icon name="CheckCircle2" size={accessibilityMode ? 20 : 12} className={accessibilityMode ? 'text-yellow-400' : 'text-green-600'} />
+                                <span>{course.completedLessons}/{course.totalLessons} уроков</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          </div>
+        ) : null}
       </main>
 
       <footer className="mt-16 py-8 border-t border-purple-100 bg-white/50 backdrop-blur-sm">
